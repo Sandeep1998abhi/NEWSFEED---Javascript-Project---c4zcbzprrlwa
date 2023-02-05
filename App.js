@@ -214,15 +214,15 @@ function displayNews() {
         var col = document.createElement('div');
         col.className = "col-sm-12 col-md-4 col-lg-3 p-2 card";
         col.innerHTML = ('<button id="T-btn"class="like-button" onclick="likeToggle()"><i class="fa-solid fa-heart"></i></button>');
-        var likeBtn = document.getElementById("T-btn");
-        function likeToggle(e){
-            if(likeBtn.style.color == "red"){
-                likeBtn.style.color  = 'grey'
-            }
-            else{
-                likeBtn.style.color="red";
-            }
-           }
+        // var likeBtn = document.getElementById("T-btn");
+        // function likeToggle(e){
+        //     if(likeBtn.style.color == "red"){
+        //         likeBtn.style.color  = 'grey'
+        //     }
+        //     else{
+        //         likeBtn.style.color="red";
+        //     }
+        //    }
 
 
         var card = document.createElement('div');
@@ -285,6 +285,7 @@ document.querySelector("#relode")
     .addEventListener('click', () => {
         window.location.reload(true);
     });
+
 
 
 
