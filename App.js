@@ -1,291 +1,126 @@
+const newsContainer = document.querySelector("#newsContainer");
+const saveButton = document.querySelector("#saveButton");
+const loadSavedButton = document.querySelector("#loadSavedButton");
+const loadNewsButton = document.querySelector("#loadNewsButton");
+const categorySelect = document.querySelector("#categorySelect");
 
-const businessBtn = document.getElementById("business");
-const allBtn = document.getElementById("all");
-const sportsBtn = document.getElementById("sport");
-const worldBtn = document.getElementById("world");
-const politicsBtn = document.getElementById("politics");
-const hatkeBtn = document.getElementById("hatke");
-const scienceBtn = document.getElementById("science");
-const automobileBtn = document.getElementById("automobile");
-
-
-const newsQuery = document.getElementById("newsQuery");
-const newsType = document.getElementById("newsType");
-const newsdetails = document.getElementById("newsdetails");
-
-var newsDataArr = [];
-
-const BUSINESS_NEWS = "https://inshorts.deta.dev/news?category=business";
-const ALL_NEWS = "https://inshorts.deta.dev/news?category=all";
-const SPORTS_NEWS = "https://inshorts.deta.dev/news?category=sports";
-const WORLD_NEWS = "https://inshorts.deta.dev/news?category=world";
-const POLITICS_NEWS = "https://inshorts.deta.dev/news?category=politics";
-const HATKE_NEWS = "https://inshorts.deta.dev/news?category=hatke";
-const SCIENCE_NEWS = "https://inshorts.deta.dev/news?category=science";
-const AUTOMOBILE_NEWS = "https://inshorts.deta.dev/news?category=automobile";
-
-businessBtn.addEventListener("click", function () {
-    newsType.innerHTML = "<h4>Business</h4>";
-    fetchBusinessNews();
-});
-
-allBtn.addEventListener("click", function () {
-    newsType.innerHTML = "<h4>All</h4>";
-    fetchAllNews();
-});
-
-sportsBtn.addEventListener("click", function () {
-    newsType.innerHTML = "<h4>Sports</h4>";
-    fetchSportsNews();
-});
-
-worldBtn.addEventListener("click", function () {
-    newsType.innerHTML = "<h4>World</h4>";
-    fetchWorldNews();
-});
-
-politicsBtn.addEventListener("click", function () {
-    newsType.innerHTML = "<h4>Politics</h4>";
-    fetchPoliticsNews();
-});
-
-hatkeBtn.addEventListener("click", function () {
-    newsType.innerHTML = "<h4>Hatke</h4>";
-    fetchHatkeNews();
-});
-
-scienceBtn.addEventListener("click", function () {
-    newsType.innerHTML = "<h4>Science</h4>";
-    fetchScienceNews();
-});
-
-automobileBtn.addEventListener("click", function () {
-    newsType.innerHTML = "<h4>Automobile</h4>";
-    fetchAutomobileNews();
-});
-
-
-const fetchBusinessNews = async () => {
-    const response = await fetch(BUSINESS_NEWS);
-    newsDataArr = [];
-    if (response.status >= 200 && response.status < 300) {
-        const myJson = await response.json();
-        newsDataArr = myJson.data;
-    } else {
-        // handle errors
-        console.log(response.status, response.statusText);
-        newsdetails.innerHTML = "<h5>No data found.</h5>"
-        return;
-    }
-
-    displayNews();
+function showDiv() {
+  document.querySelector('#hidden').style.display = "block";
 }
 
+const savedNews = [];
 
-const fetchAllNews = async () => {
-    const response = await fetch(ALL_NEWS);
-    newsDataArr = [];
-    if (response.status >= 200 && response.status < 300) {
-        const myJson = await response.json();
-        newsDataArr = myJson.data;
-    } else {
-        // handle errors
-        console.log(response.status, response.statusText);
-        newsdetails.innerHTML = "<h5>No data found.</h5>"
-        return;
-    }
+const handleSavedNews = (savedItem) => {
 
-    displayNews();
+  savedNews.push(savedItem);
+  console.log(savedNews);
+  alert("News saved")
+}
+const likeNews = [];
+const handlelikedNews = (likeItem) => {
+
+  likeNews.push(likeItem);
+  console.log(likeNews);
+  setTimeout(()=>{
+    alert("News Liked")
+  }, 500)
 }
 
-const fetchSportsNews = async () => {
-    const response = await fetch(SPORTS_NEWS);
-    newsDataArr = [];
-    if (response.status >= 200 && response.status < 300) {
-        const myJson = await response.json();
-        newsDataArr = myJson.data;
-    } else {
-        // handle errors
-        console.log(response.status, response.statusText);
-        newsdetails.innerHTML = "<h5>No data found.</h5>"
-        return;
-    }
+const getNews = (category = "science") => {
+  newsContainer.innerHTML = "";
+  fetch(`https://inshorts.deta.dev/news?category=${category}`)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Data", data)
+      data.data.forEach((newsItem) => {
+        const div = document.createElement("div");
+        div.classList.add("newsItem");
+        div.innerHTML = `
+          <p>By - <strong>${newsItem.author}</strong></p>
+          <h2>${newsItem.title}</h2>
+          <div id="box">
+          <img src="${newsItem.imageUrl}" class="img"></img>
+          <div id="innerbox">
+          <p id="nscontent">${newsItem.content} <a href="${newsItem.readMoreUrl}" style="text-decoration:none">READ MORE</a></p>
+          <p>Date:- ${newsItem.date}</p>
+          <p>Time:- ${newsItem.time}</p>
+          </div>
+          </div>
+        `;
+        const button = document.createElement("button");
+        button.classList.add("btton")
+        button.innerHTML = "Save"
+        button.onclick = function () {
+          handleSavedNews(newsItem)
 
-    displayNews();
-}
+        }
+        let i = document.createElement("i");
+        i.classList.add("fa-solid")
+        i.classList.add("fa-heart")
+        i.onclick = function () {
+          handlelikedNews(newsItem)
+        }
+        i.addEventListener("click", () => {
+          i.classList.toggle("red");
+        })
 
-const fetchWorldNews = async () => {
-    const response = await fetch(WORLD_NEWS);
-    newsDataArr = [];
-    if (response.status >= 200 && response.status < 300) {
-        const myJson = await response.json();
-        console.log(myJson);
-        newsDataArr = myJson.data;
-    } else {
-        // handle errors
-        console.log(response.status, response.statusText);
-        newsdetails.innerHTML = "<h5>No data found.</h5>"
-        return;
-    }
-
-    displayNews();
-}
-
-const fetchPoliticsNews = async () => {
-    const response = await fetch(POLITICS_NEWS);
-    newsDataArr = [];
-    if (response.status >= 200 && response.status < 300) {
-        const myJson = await response.json();
-        newsDataArr = myJson.data;
-    } else {
-        // handle errors
-        console.log(response.status, response.statusText);
-        newsdetails.innerHTML = "<h5>No data found.</h5>"
-        return;
-    }
-
-    displayNews();
-}
-
-const fetchHatkeNews = async () => {
-    const response = await fetch(HATKE_NEWS);
-    newsDataArr = [];
-    if (response.status >= 200 && response.status < 300) {
-        const myJson = await response.json();
-        newsDataArr = myJson.data;
-    } else {
-        // handle errors
-        console.log(response.status, response.statusText);
-        newsdetails.innerHTML = "<h5>No data found.</h5>"
-        return;
-    }
-
-    displayNews();
-}
-
-const fetchScienceNews = async () => {
-    const response = await fetch(SCIENCE_NEWS);
-    newsDataArr = [];
-    if (response.status >= 200 && response.status < 300) {
-        const myJson = await response.json();
-        newsDataArr = myJson.data;
-    } else {
-        // handle errors
-        console.log(response.status, response.statusText);
-        newsdetails.innerHTML = "<h5>No data found.</h5>"
-        return;
-    }
-
-    displayNews();
-}
-
-const fetchAutomobileNews = async () => {
-    const response = await fetch(AUTOMOBILE_NEWS);
-    newsDataArr = [];
-    if (response.status >= 200 && response.status < 300) {
-        const myJson = await response.json();
-        newsDataArr = myJson.data;
-    } else {
-        // handle errors
-        console.log(response.status, response.statusText);
-        newsdetails.innerHTML = "<h5>No data found.</h5>"
-        return;
-    }
-
-    displayNews();
-}
-
-
-
-
-function displayNews() {
-
-    newsdetails.innerHTML = "";
-
-    // if(newsDataArr.length == 0) {
-    //     newsdetails.innerHTML = "<h5>No data found.</h5>"
-    //     return;
-    // }
-
-    newsDataArr.forEach(news => {
-
-        var date = news.date;
-
-        var col = document.createElement('div');
-        col.className = "col-sm-12 col-md-4 col-lg-3 p-2 card";
-        col.innerHTML = ('<button id="T-btn"class="like-button" onclick="likeToggle()"><i class="fa-solid fa-heart"></i></button>');
-        // var likeBtn = document.getElementById("T-btn");
-        // function likeToggle(e){
-        //     if(likeBtn.style.color == "red"){
-        //         likeBtn.style.color  = 'grey'
-        //     }
-        //     else{
-        //         likeBtn.style.color="red";
-        //     }
-        //    }
-
-
-        var card = document.createElement('div');
-        card.className = "p-2";
-
-        var image = document.createElement('img');
-        image.setAttribute("height", "matchparent");
-        image.setAttribute("width", "100%");
-        image.src = news.imageUrl;
-
-        var cardBody = document.createElement('div');
-
-        var newsHeading = document.createElement('h5');
-        newsHeading.className = "card-title";
-        newsHeading.innerHTML = news.title;
-
-        var dateHeading = document.createElement('h6');
-        dateHeading.className = "text-primary";
-        dateHeading.innerHTML = news.date;
-
-        var discription = document.createElement('p');
-        discription.className = "text-muted";
-        discription.innerHTML = news.content;
-
-        var link = document.createElement('a');
-        link.className = "btn btn-dark";
-        link.setAttribute("target", "_blank");
-        link.href = news.url;
-        link.innerHTML = "Read more";
-
-        cardBody.appendChild(newsHeading);
-        cardBody.appendChild(dateHeading);
-        cardBody.appendChild(discription);
-        cardBody.appendChild(link);
-
-        card.appendChild(image);
-        card.appendChild(cardBody);
-
-        col.appendChild(card);
-
-        newsdetails.appendChild(col);
+        div.appendChild(button);
+        div.appendChild(i);
+        newsContainer.appendChild(div);
+      });
     });
+};
+
+const saveNews = () => {
+  const news = Array.from(document.querySelectorAll(".newsItem")).map(
+    (newsItem) => {
+      return {
+        title: newsItem.querySelector("h2").textContent,
+        content: newsItem.querySelector("#nscontent").textContent,
+      };
+    }
+  );
+  console.log("saved news", news)
+  localStorage.setItem("savedNews", JSON.stringify(news));
+  console.log(localStorage);
+};
+const likNews = () => {
+  const Likes = Array.from(document.querySelectorAll(".newsItem")).map(
+    (newsItem) => {
+      return {
+        title: newsItem.querySelector("h2").textContent,
+        content: newsItem.querySelector("#nscontent").textContent,
+      };
+    }
+  );
+  console.log("liked news", Likes)
+  localStorage.setItem("likedNews", JSON.stringify(Likes));
+  let store = JSON.parse(localStorage.getItem("Likes"));
+  console.log(store);
+};
+
+const loadSavedNews = () => {
+  console.log("Saved News", savedNews)
+  newsContainer.innerHTML = "";
+  
+  if (!savedNews) {
+    return;
+  }
+  savedNews.forEach((newsItem) => {
+    const div = document.createElement("div");
+    div.classList.add("newsItem");
+    div.innerHTML = `
+    <h2>${newsItem.title}</h2>
+    <p>${newsItem.content}</p>
     
-}
+    `;
+    newsContainer.appendChild(div);
+  });
+};
 
-function myFunction() {
-    var x = document.getElementById("Select-Button");
-    if (x.style.display === "none") {
-        x.style.display = "";
-    } else {
-        x.style.display = "none";
-    }
-}
+loadSavedButton.addEventListener("click", loadSavedNews);
+loadNewsButton.addEventListener("click", () => {
+  getNews(categorySelect.value);
+});
 
-window.onload = function () {
-    document.getElementById("Select-Button").style.display = 'none';
-}
-
-document.querySelector("#relode")
-    .addEventListener('click', () => {
-        window.location.reload(true);
-    });
-
-
-
-
+getNews();
