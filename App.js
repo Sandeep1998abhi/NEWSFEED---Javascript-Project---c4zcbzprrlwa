@@ -9,21 +9,18 @@ function showDiv() {
 }
 
 const savedNews = [];
-
 const handleSavedNews = (savedItem) => {
-
   savedNews.push(savedItem);
   console.log(savedNews);
   alert("News saved")
+
 }
+
 const likeNews = [];
 const handlelikedNews = (likeItem) => {
-
   likeNews.push(likeItem);
   console.log(likeNews);
-  setTimeout(()=>{
-    alert("News Liked")
-  }, 500)
+  likNews(likeItem);
 }
 
 const getNews = (category = "science") => {
@@ -49,12 +46,12 @@ const getNews = (category = "science") => {
         `;
         const button = document.createElement("button");
         button.classList.add("btton")
-        button.innerHTML = "Save"
+        button.innerHTML = "SAVE"
         button.onclick = function () {
           handleSavedNews(newsItem)
 
         }
-        let i = document.createElement("i");
+        const i = document.createElement("i");
         i.classList.add("fa-solid")
         i.classList.add("fa-heart")
         i.onclick = function () {
@@ -62,6 +59,7 @@ const getNews = (category = "science") => {
         }
         i.addEventListener("click", () => {
           i.classList.toggle("red");
+    
         })
 
         div.appendChild(button);
@@ -84,7 +82,9 @@ const saveNews = () => {
   localStorage.setItem("savedNews", JSON.stringify(news));
   console.log(localStorage);
 };
-const likNews = () => {
+
+
+const likNews = (id) => {
   const Likes = Array.from(document.querySelectorAll(".newsItem")).map(
     (newsItem) => {
       return {
@@ -93,10 +93,10 @@ const likNews = () => {
       };
     }
   );
-  console.log("liked news", Likes)
-  localStorage.setItem("likedNews", JSON.stringify(Likes));
-  let store = JSON.parse(localStorage.getItem("Likes"));
-  console.log(store);
+  console.log("liked news", id)
+  localStorage.setItem("likedNews", JSON.stringify(id));
+  JSON.parse(localStorage.getItem("Likes"));
+  // console.log(store);
 };
 
 const loadSavedNews = () => {
