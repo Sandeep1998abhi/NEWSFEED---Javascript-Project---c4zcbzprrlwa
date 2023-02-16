@@ -13,10 +13,11 @@ const handleSavedNews = (savedItem) => {
   savedNews.push(savedItem);
   console.log(savedNews);
   alert("News saved")
+  saveNews(savedItem);
 
 }
 
-const likeNews = [];
+let likeNews = [];
 const handlelikedNews = (likeItem) => {
   likeNews.push(likeItem);
   console.log(likeNews);
@@ -69,8 +70,8 @@ const getNews = (category = "science") => {
     });
 };
 
-const saveNews = () => {
-  const news = Array.from(document.querySelectorAll(".newsItem")).map(
+const saveNews = (id) => {
+  const newss = Array.from(document.querySelectorAll(".newsItem")).map(
     (newsItem) => {
       return {
         title: newsItem.querySelector("h2").textContent,
@@ -78,9 +79,11 @@ const saveNews = () => {
       };
     }
   );
-  console.log("saved news", news)
-  localStorage.setItem("savedNews", JSON.stringify(news));
-  console.log(localStorage);
+  console.log("saved news",id)
+  localStorage.setItem("savedNews", JSON.stringify(id));
+  JSON.parse(localStorage.getItem("newss"));
+
+  // console.log(localStorage);
 };
 
 
