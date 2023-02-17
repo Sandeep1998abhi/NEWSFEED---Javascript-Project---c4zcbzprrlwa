@@ -1,3 +1,4 @@
+
 const newsContainer = document.querySelector("#newsContainer");
 const saveButton = document.querySelector("#saveButton");
 const loadSavedButton = document.querySelector("#loadSavedButton");
@@ -15,13 +16,6 @@ const handleSavedNews = (savedItem) => {
   alert("News saved")
   saveNews(savedItem);
 
-}
-
-let likeNews = [];
-const handlelikedNews = (likeItem) => {
-  likeNews.push(likeItem);
-  console.log(likeNews);
-  likNews(likeItem);
 }
 
 const getNews = (category = "science") => {
@@ -82,25 +76,15 @@ const saveNews = (id) => {
   console.log("saved news",id)
   localStorage.setItem("savedNews", JSON.stringify(id));
   JSON.parse(localStorage.getItem("newss"));
-
-  // console.log(localStorage);
 };
 
-
-const likNews = (id) => {
-  const Likes = Array.from(document.querySelectorAll(".newsItem")).map(
-    (newsItem) => {
-      return {
-        title: newsItem.querySelector("h2").textContent,
-        content: newsItem.querySelector("#nscontent").textContent,
-      };
-    }
-  );
-  console.log("liked news", id)
-  localStorage.setItem("likedNews", JSON.stringify(id));
-  JSON.parse(localStorage.getItem("Likes"));
-  // console.log(store);
-};
+const likeNews = JSON.parse(localStorage.getItem("likeNews")) || [];
+const handlelikedNews = (likeItem) => {
+  likeNews.push(likeItem);
+  localStorage.setItem("likeNews", JSON.stringify(likeNews))
+  console.log(likeNews);
+ 
+}
 
 const loadSavedNews = () => {
   console.log("Saved News", savedNews)
