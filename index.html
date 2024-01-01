@@ -1,39 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Zerox.News</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://kit.fontawesome.com/ea77adab0d.js" crossorigin="anonymous"></script>
-    <script src="App.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>★彡𝐍𝐞𝐰𝐬彡★</title>
+    <link rel="icon" type="image/x-icon" href="/image/fevi-icon.png">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="lds-dual-ring"></div>
     <header>
-      <h1>ℤ𝕖𝕣𝕠𝕩.ℕ𝕖𝕨𝕤</h1>
+      
+      <img src="https://cdn.pixabay.com/photo/2016/09/04/17/46/news-1644696_1280.png" width="120px" style="width: 75px"/>
+
+      <div class="inputSearch desktop">
+        <form id="searchForm">
+          <input type="text" placeholder="Type to search..." id="searchInput" />
+          <span> <i class="fa-solid fa-search"></i></span>
+        </form>
+      </div>
+      
+      <nav class="desktop">
+        <ul>
+          <li onclick="Search('ipl')">IPL</li>
+          <li onclick="Search('tech')">Tech</li>
+          <li onclick="Search('food')">Food</li>
+          <li onclick="Search('movies')">Movies</li>
+          <li onclick="Search('business')">Business</li>
+        </ul>
+      </nav>
+
+      <div class="menuBtn">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+
+      <!------>
+      <div class="mobile hidden">
+        <nav>
+          <ul>
+            <li onclick="Search('ipl2023')">IPL</li>
+            <li onclick="Search('tech')">Tech</li>
+            <li onclick="Search('food')">Food</li>
+            <li onclick="Search('movies')">Movies</li>
+            <li onclick="Search('business')">Business</li>
+          </ul>
+        </nav>
+        <div class="inputSearch">
+        <form id="searchFormMobile" >
+          <input type="text" placeholder="Type to search..."  id="searchInputMobile"/>
+          <span> <i class="fa-solid fa-search"></i></span>
+        </div>
+        </form>
+      </div>
     </header>
-  
-    <nav>
-      <div id="header">
-      <select id="categorySelect"  class="btton">
-        <option value="science">SCIENCE</option>
-        <option value="all">ALL</option>
-        <option value="business">BUSINESS</option>
-        <option value="sports">SPORTS</option>
-        <option value="world">WORLD</option>
-        <option value="politics">POLITICS</option>
-        <option value="hatke">HATKE</option>
-        <option value="automobile">AUTOMOBILE</option>
-      </select>
-      <button class="btton" id="loadNewsButton" onclick="showDiv()">L͢o͢a͢d͢ N͢e͢w͢s͢</button>
-      <button  class="btton" id="loadSavedButton">S͢a͢v͢e͢d͢ N͢e͢w͢s͢</button>
-    </div>
-    </nav>
-  
-    <main>
-      <div id="hidden" style="display: none;">
-      <div id="newsContainer"></div>
-    </div>
-    </main>
-    
+
+    <!-- main  -->
+
+    <main ></main>
+
+    <script src="App.js"></script>
   </body>
 </html>
