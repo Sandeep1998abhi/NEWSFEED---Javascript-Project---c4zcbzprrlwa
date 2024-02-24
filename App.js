@@ -1,77 +1,102 @@
+const darkModeToggle = document.getElementById("darkModeToggle");
+const body = document.body;
 
-
-
-const API_KEY = "3d8e106189564c6cab2c19e447327a86"
-const url = "https://newsapi.org/v2/everything?q="
-
-
-
-async function fetchData(query){
-    const res = await fetch(`${url}${query}&apiKey=${API_KEY}`)
-    const data = await res.json()
-    return data
+// Function to toggle dark mode based on user preference
+function toggleDarkMode() {
+  if (darkModeToggle.checked) {
+    body.classList.add("dark-mode");
+  } else {
+    body.classList.remove("dark-mode");
+  }
 }
-fetchData("all").then(data => renderMain(data.articles))
 
+// Event listener for dark mode toggle button
+darkModeToggle.addEventListener("change", toggleDarkMode);
 
-let mobilemenu = document.querySelector(".mobile")
-let menuBtn = document.querySelector(".menuBtn")
-let menuBtnDisplay = true;
+// Function to check and set initial dark mode state based on user preferences
+function setInitialDarkMode() {
+  const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-menuBtn.addEventListener("click",()=>{
-    mobilemenu.classList.toggle("hidden")
-})
+  if (prefersDarkMode) {
+    body.classList.add("dark-mode");
+    darkModeToggle.checked = true;
+  }
+}
 
+// Call the function to set initial dark mode state
+//setInitialDarkMode();
 
- 
-function renderMain(arr){
-    let mainHTML = ''
-    for(let i = 0 ; i < arr?.length;i++){
-        if(arr[i].urlToImage){
-        mainHTML += ` <div class="card">
-                        <a href=${arr[i]?.url}>
-                        <img src=${arr[i]?.urlToImage} lazy="loading" alt="" />
-                        <h4>${arr[i]?.title}</h4>
-                        <div class="publishbyDate">
-                            <p>${arr[i]?.source.name}</p>
-                            <span>•</span>
-                            <p>${new Date(arr[i]?.publishedAt).toLocaleDateString()}</p>
-                        </div>
-                        <div class="desc">
-                           ${arr[i]?.description}
-                        </div>
-                        </a>
-                     </div>
-        `
-        }
+let newsBox = document.getElementById("newsBox");
+let spinner = document.getElementById("spinner");
+let newsCategory = [
+  "national",
+  "business",
+  "sports",
+  "world",
+  "politics",
+  "technology",
+  "startup",
+  "entertainment",
+  "miscellaneous",
+  "hatke",
+  "science",
+  "automobile",
+];
+
+// Create XMLHttpRequest Object
+const xhr = new XMLHttpRequest();
+
+function sendCategory(index) {
+  getNews(newsCategory[index]);
+}
+getNews("all");
+
+function getNews(newsCategoryName) {
+  xhr.open(
+    "GET",
+    `https://inshortsapi.vercel.app/news?category=${newsCategoryName}`,
+    true
+  );
+
+  xhr.getResponseHeader("Content-type", "application/json");
+
+  xhr.onload = function () {
+    if (this.status === 200) {
+      let json = JSON.parse(this.responseText);
+      let data = json.data;
+
+      let newsHTML = "";
+
+      function showSpinner() {
+        spinner.style.visibility = "hidden";
+        newsBox.style.visibility = "visible";
+      }
+
+      xhr.onprogress = showSpinner;
+
+      for (key in data) {
+        let news = `<div class="newsCard ">
+        <div class="imageWrapper">
+        <img src="${data[key].imageUrl}"
+        class="thumnail" alt="Image">
+            </div>
+            <div class="card-body">
+            <div class="card-date">${data[key].date}</div>
+                      <h5 class="card-title">${data[key].title}</h5>
+                                <h5 class="card-author">Author: ${data[key].author}</h5>
+                                <p class="card-text">${data[key].content}</p>
+                                <a target="_blank" href="${data[key].readMoreUrl}" class="btn btn-primary">Read more..</a>
+                            </div>
+                           
+                        </div>`;
+        newsHTML += news;
+      }
+
+      newsBox.innerHTML = newsHTML;
+    } else {
+      console.log("Some Error Occurred");
     }
+  };
 
-    document.querySelector("main").innerHTML = mainHTML
-}
-
-
-const searchBtn = document.getElementById("searchForm")
-const searchBtnMobile = document.getElementById("searchFormMobile")
-const searchInputMobile = document.getElementById("searchInputMobile") 
-const searchInput = document.getElementById("searchInput")
-
-
-searchBtn.addEventListener("click",async(e)=>{
-    e.preventDefault()
-   
-    const data = await fetchData(searchInput?.value)
-    renderMain(data?.articles)
-
-
-})
-searchBtnMobile.addEventListener("click",async(e)=>{
-    e.preventDefault()
-    const data = await fetchData(searchInputMobile?.value)
-    renderMain(data?.articles)
-})
-
-
-async function Search(query){
-    const data = await fetchData(query)
-    renderMain(data?.articles)
+  xhr.send();
 }
