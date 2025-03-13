@@ -1,34 +1,9 @@
 const darkModeToggle = document.getElementById("darkModeToggle");
 const body = document.body;
+const newsBox = document.getElementById("newsBox");
+const spinner = document.getElementById("spinner");
 
-// Function to toggle dark mode based on user preference
-function toggleDarkMode() {
-  if (darkModeToggle.checked) {
-    body.classList.add("dark-mode");
-  } else {
-    body.classList.remove("dark-mode");
-  }
-}
-
-// Event listener for dark mode toggle button
-darkModeToggle.addEventListener("change", toggleDarkMode);
-
-// Function to check and set initial dark mode state based on user preferences
-function setInitialDarkMode() {
-  const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-  if (prefersDarkMode) {
-    body.classList.add("dark-mode");
-    darkModeToggle.checked = true;
-  }
-}
-
-// Call the function to set initial dark mode state
-//setInitialDarkMode();
-
-let newsBox = document.getElementById("newsBox");
-let spinner = document.getElementById("spinner");
-let newsCategory = [
+const newsCategory = [
   "national",
   "business",
   "sports",
@@ -43,60 +18,82 @@ let newsCategory = [
   "automobile",
 ];
 
-// Create XMLHttpRequest Object
-const xhr = new XMLHttpRequest();
+// Toggle Dark Mode
+function toggleDarkMode() {
+  if (darkModeToggle.checked) {
+    body.classList.add("dark-mode");
+  } else {
+    body.classList.remove("dark-mode");
+  }
+}
 
+darkModeToggle.addEventListener("change", toggleDarkMode);
+
+// Initial Dark Mode Setting
+function setInitialDarkMode() {
+  const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (prefersDarkMode) {
+    body.classList.add("dark-mode");
+    darkModeToggle.checked = true;
+  }
+}
+
+setInitialDarkMode();
+
+// Fetch News Using Fetch API and CORS Proxy
+function getNews(newsCategoryName = "all") {
+  // Show Spinner
+  spinner.style.visibility = "visible";
+  newsBox.style.visibility = "hidden";
+
+  const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+  const apiUrl = `https://inshortsapi.vercel.app/news?category=${newsCategoryName}`;
+
+  fetch(proxyUrl + apiUrl)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(json => {
+      const data = json.data;
+      let newsHTML = "";
+
+      data.forEach(newsItem => {
+        const news = `
+          <div class="newsCard">
+            <div class="imageWrapper">
+              <img src="${newsItem.imageUrl}" class="thumbnail" alt="Image">
+            </div>
+            <div class="card-body">
+              <div class="card-date">${newsItem.date}</div>
+              <h5 class="card-title">${newsItem.title}</h5>
+              <h5 class="card-author">Author: ${newsItem.author}</h5>
+              <p class="card-text">${newsItem.content}</p>
+              <a target="_blank" href="${newsItem.readMoreUrl}" class="btn btn-primary">Read more..</a>
+            </div>
+          </div>`;
+        newsHTML += news;
+      });
+
+      newsBox.innerHTML = newsHTML;
+
+      // Hide Spinner and Show Content
+      spinner.style.visibility = "hidden";
+      newsBox.style.visibility = "visible";
+    })
+    .catch(error => {
+      console.error("Fetch error:", error);
+      spinner.style.visibility = "hidden";
+    });
+}
+
+// Call to load initial news
+getNews();
+
+// Function to send selected category
 function sendCategory(index) {
   getNews(newsCategory[index]);
 }
-getNews("all");
 
-function getNews(newsCategoryName) {
-  xhr.open(
-    "GET",
-    `https://inshortsapi.vercel.app/news?category=${newsCategoryName}`,
-    true
-  );
-
-  xhr.getResponseHeader("Content-type", "application/json");
-
-  xhr.onload = function () {
-    if (this.status === 200) {
-      let json = JSON.parse(this.responseText);
-      let data = json.data;
-
-      let newsHTML = "";
-
-      function showSpinner() {
-        spinner.style.visibility = "hidden";
-        newsBox.style.visibility = "visible";
-      }
-
-      xhr.onprogress = showSpinner;
-
-      for (key in data) {
-        let news = `<div class="newsCard ">
-        <div class="imageWrapper">
-        <img src="${data[key].imageUrl}"
-        class="thumnail" alt="Image">
-            </div>
-            <div class="card-body">
-            <div class="card-date">${data[key].date}</div>
-                      <h5 class="card-title">${data[key].title}</h5>
-                                <h5 class="card-author">Author: ${data[key].author}</h5>
-                                <p class="card-text">${data[key].content}</p>
-                                <a target="_blank" href="${data[key].readMoreUrl}" class="btn btn-primary">Read more..</a>
-                            </div>
-                           
-                        </div>`;
-        newsHTML += news;
-      }
-
-      newsBox.innerHTML = newsHTML;
-    } else {
-      console.log("Some Error Occurred");
-    }
-  };
-
-  xhr.send();
-}
